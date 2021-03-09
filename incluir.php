@@ -15,11 +15,11 @@
     }
   }else{
     $res = mysqli_query($con, $sql); //nao ta inserindo
-    echo gettype($sql);
+    //echo gettype($sql);
   }
 
   mysqli_close($con);
-  //header("location: ./exibir.php?table=".$_POST["table"]);
+  header("location: ./exibir.php?table=".$_POST["table"]);
 
   function myQuery(){
     $sql;

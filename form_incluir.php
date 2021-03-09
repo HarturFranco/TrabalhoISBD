@@ -1,4 +1,36 @@
 <?php
+
+$estadosBrasileiros = array(
+'AC'=>'Acre',
+'AL'=>'Alagoas',
+'AP'=>'Amapá',
+'AM'=>'Amazonas',
+'BA'=>'Bahia',
+'CE'=>'Ceará',
+'DF'=>'Distrito Federal',
+'ES'=>'Espírito Santo',
+'GO'=>'Goiás',
+'MA'=>'Maranhão',
+'MT'=>'Mato Grosso',
+'MS'=>'Mato Grosso do Sul',
+'MG'=>'Minas Gerais',
+'PA'=>'Pará',
+'PB'=>'Paraíba',
+'PR'=>'Paraná',
+'PE'=>'Pernambuco',
+'PI'=>'Piauí',
+'RJ'=>'Rio de Janeiro',
+'RN'=>'Rio Grande do Norte',
+'RS'=>'Rio Grande do Sul',
+'RO'=>'Rondônia',
+'RR'=>'Roraima',
+'SC'=>'Santa Catarina',
+'SP'=>'São Paulo',
+'SE'=>'Sergipe',
+'TO'=>'Tocantins'
+);
+
+
 header("Content-Type: text/html; charset=utf8",true);
 ?>
 <html>
@@ -16,9 +48,9 @@ header("Content-Type: text/html; charset=utf8",true);
       $result = mysqli_query($con, $sql);
       $vetor = mysqli_fetch_array($result, MYSQLI_ASSOC);
       mysqli_close($con);
-      if(array_key_exists("data", $vetor)){
-        $date = new DateTime($vetor['data']);
-        $vetor['data'] = $date->format('d-m-Y');
+      if(array_key_exists("Data", $vetor)){
+        $date = new DateTime($vetor['Data']);
+        $vetor['Data'] = $date->format('d-m-Y');
       }
 
     ?>
@@ -42,7 +74,7 @@ header("Content-Type: text/html; charset=utf8",true);
       if($key == 'Cidade'){
     ?>
         <tr>
-            <th colspan="3" align="center"><br>Endereço:<br></th>
+            <th colspan="2" align="center"><br>Endereço:<br></th>
         </tr>
     <?php
       }
@@ -60,14 +92,26 @@ header("Content-Type: text/html; charset=utf8",true);
     <?php
       } else if($key == 'Data' || $key == 'Data Nascimento'){
     ?>
-          <input type="text" name="<?php echo @$key; ?>" value="<?php echo @$value; ?>" size="3">
+          <input type="text" name="<?php echo @$key; ?>" value="<?php echo @$value; ?>" size="8">
     <?php
       } else if($key == 'Descricao'){
     ?>
           <!-- HTML CODE HERE -->
-          <textarea id="descricao" name="<?php echo @$key; ?>" rows="4" cols="41" style="resize: none;">
+          <textarea id="descricao" name="<?php echo @$key; ?>" rows="4" cols="32" style="resize: none;">
               <?php echo @$value; ?>
           </textarea>
+    <?php
+      } else if ($key == "Estado"){
+    ?>
+          <select name="Estado">
+    <?php
+          foreach ($estadosBrasileiros as $k => $v) {
+     ?>
+            <option value="<?php echo @$k; ?>" <?php if($k == $value){ ?> selected="selected";<?php } ?>  ><?php echo $v; ?></option>
+     <?php
+          }
+      ?>
+          </select>
     <?php
       }else {
     ?>
@@ -116,6 +160,8 @@ function myQuery() {
 
   return $sql;
 };
+
+
 
 function myVetor(){
   $keys = "";
