@@ -34,15 +34,15 @@ $estadosBrasileiros = array(
 header("Content-Type: text/html; charset=utf8",true);
 ?>
 <html>
-<head><title>Incluir/Editar um Torneio.</title></head>
+<head><title>Incluir/Editar tabela <?php echo $_GET['table']; ?>.</title></head>
 <body>
   <form name="form1" method="POST" action="incluir.php" enctype="multipart/form-data">
     <?php
     include("./config.php");
     $con = mysqli_connect($host, $login, $senha, $bd);
-    if(isset($_GET["id"])){
+    if(count($_GET) >= 2){
     ?>
-      <center><h3>Editar <?php echo $_GET['table']; ?></h3></center>
+      <center><h3>Editar item tabela <?php echo $_GET['table']; ?></h3></center>
     <?php
       $sql = myQuery();
       $result = mysqli_query($con, $sql);
@@ -61,7 +61,7 @@ header("Content-Type: text/html; charset=utf8",true);
       $vetor = myVetor();
     ?>
 
-      <center><h3>Cadastrar Novo <?php echo $_GET['table']; ?></h3></center>
+      <center><h3>Cadastrar Novo item tabela <?php echo $_GET['table']; ?></h3></center>
 
     <?php
     }
@@ -148,13 +148,31 @@ function myQuery() {
       $sql = "SELECT nome AS Nome, categoria AS Categoria, cidade AS Cidade, estado AS Estado, logradouro AS Logradouro, numero AS Numero, complemento AS Complemento, bairro AS Bairro, referencia AS Referencia, CEP FROM universidade WHERE idUniversidade=".$_GET['id']; // substituir * por tudo menos id
       break;
     case 'pessoa':
-      $sql = "SELECT nome AS Nome, genero AS Genero, dataNasc AS 'Data Nascimento',cidade AS Cidade, estado AS Estado, logradouro AS Logradouro, numero AS Numero, complemento AS Complemento, bairro AS Bairro, referencia AS Referencia, CEP FROM pessoa"; // substituir * por tudo menos id
+      $sql = "SELECT nome AS Nome, genero AS Genero, dataNasc AS 'Data Nascimento',cidade AS Cidade, estado AS Estado, logradouro AS Logradouro, numero AS Numero, complemento AS Complemento, bairro AS Bairro, referencia AS Referencia, CEP FROM pessoa WHERE pessoa.cpf='".$_GET['CPF']."'"; // substituir * por tudo menos id
       break;
     case 'esporte':
-      $sql = "SELECT nome AS Nome, categoria AS Categoria, regras AS Regras FROM esporte"; // substituir * por tudo menos id
+      $sql = "SELECT nome AS Nome, categoria AS Categoria, regras AS Regras FROM esporte WHERE esporte.idEsporte =".$_GET['id']; // substituir * por tudo menos id
+      break;
+    case 'telefone':
+      $sql = "SELECT telefone AS Telefone, pessoa_cpf AS Pessoa FROM telefone WHERE pessoa_cpf ='".$_GET['CPF']."' AND telefone ='".$_GET['tel']."'";
+      break;
+    case 'atletica':
+      $sql = "SELECT nome AS Nome, idUniversidade AS Universidade FROM atletica WHERE idAtletica =".$_GET['id'];
+      break;
+    case 'curso':
+      $sql = "SELECT nome AS Nome, idAtletica AS Atletica, idUniversidade AS Universidade FROM curso WHERE curso.idCurso =".$_GET['id'];
+      break;
+    case 'time':
+      $sql = "SELECT nome AS Nome, idAtletica AS Atletica, idUniversidade AS Universidade FROM `time` WHERE  `time`.idTime =".$_GET['id'];
+      break;
+    case 'disputa':
+      $sql = "SELECT idTorneio AS Torneio, idEsporte AS Esporte, dataHora AS 'Data e Hora' FROM disputa WHERE  idDisputa =".$_GET['id'];
+      break;
+    case 'compete':
+
       break;
     default:
-      // code...
+      // code... iz4g0n_
       break;
   }
 
@@ -177,6 +195,24 @@ function myVetor(){
       break;
     case 'esporte':
       $keys = array("Nome","Categoria","Regras");
+      break;
+    case 'telefone':
+
+      break;
+    case 'atletica':
+
+      break;
+    case 'curso':
+
+      break;
+    case 'time':
+
+      break;
+    case 'disputa':
+
+      break;
+    case 'compete':
+
       break;
     default:
       // code...

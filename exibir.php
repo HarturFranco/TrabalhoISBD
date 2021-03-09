@@ -102,14 +102,25 @@ header("Content-Type: text/html; charset=utf8",true);
             </td>
       <?php
           }  // end for
-       ?>
-             <td align="center">
+      ?>
+          <td align="center">
+      <?php
+          if($_GET['table'] == 'pessoa'){
+      ?>
+            <input type="button" value="Excluir" onclick="location.href='excluir.php?table=<?php echo $_GET['table']; ?>&CPF=<?php echo $dados['CPF'];?>'">
+            <input type="button" value="Editar " onclick="location.href='form_incluir.php?table=<?php echo $_GET['table']; ?>&CPF=<?php echo $dados['CPF'];?>'">
 
-              <input type="button" value="Excluir" onclick="location.href='excluir.php?table=<?php echo $_GET['table']; ?>&id=<?php if($_GET['table'] == 'pessoa') echo $dados['CPF']; else echo $dados['ID'];?>'">
-              <input type="button" value="Editar " onclick="location.href='form_incluir.php?table=<?php echo $_GET['table']; ?>&id=<?php if($_GET['table'] == 'pessoa') echo $dados['CPF']; else echo $dados['ID'];?>'">
+      <?php
+          } else {
+      ?>
+            <input type="button" value="Excluir" onclick="location.href='excluir.php?table=<?php echo $_GET['table']; ?>&id=<?php echo $dados['ID'];?>'">
+            <input type="button" value="Editar " onclick="location.href='form_incluir.php?table=<?php echo $_GET['table']; ?>&id=<?php echo $dados['ID'];?>'">
 
-             </td>
-           </tr>
+      <?php
+          }
+      ?>
+           </td>
+         </tr>
       <?php
         } while($dados = mysqli_fetch_assoc($tabela));// end while
       ?>
