@@ -16,8 +16,8 @@ header("Content-Type: text/html; charset=utf8",true);
         $tabela = mysqli_query($con, $sql);
         if(mysqli_num_rows($tabela)==0){
       ?>
-        <tr><td align="center">Sem torneios cadastrados no banco</td></tr>
-        <tr><td align="center"><input type="submit" value="Inserir Torneio"></td></tr>
+        <tr><td align="center">Sem dados cadastrados</td></tr>
+        <tr><td align="center"><input type="submit" value="Inserir"></td></tr>
       <?php
         }else{
       ?>
@@ -109,7 +109,21 @@ header("Content-Type: text/html; charset=utf8",true);
       ?>
             <input type="button" value="Excluir" onclick="location.href='excluir.php?table=<?php echo $_GET['table']; ?>&CPF=<?php echo $dados['CPF'];?>'">
             <input type="button" value="Editar " onclick="location.href='form_incluir.php?table=<?php echo $_GET['table']; ?>&CPF=<?php echo $dados['CPF'];?>'">
-
+      <?php
+          } else if($_GET['table'] == 'joga'){
+      ?>
+            <input type="button" value="Excluir" onclick="location.href='excluir.php?table=<?php echo $_GET['table']; ?>&CPF=<?php echo $_GET['CPF'];?>&idTime=<?php echo $dados['idTime'];?>'">
+            <input type="button" value="Editar " onclick="location.href='form_incluir.php?table=<?php echo $_GET['table']; ?>&CPF=<?php echo $_GET['CPF'];?>&idTime=<?php echo $dados['idTime'];?>'">
+      <?php
+          } else if($_GET['table'] == 'compete'){
+      ?>
+            <input type="button" value="Excluir" onclick="location.href='excluir.php?table=<?php echo $_GET['table']; ?>&idDis=<?php echo $_GET['idDis'];?>&idTime=<?php echo $dados['idTime'];?>'">
+            <input type="button" value="Editar " onclick="location.href='form_incluir.php?table=<?php echo $_GET['table']; ?>&idDis=<?php echo $_GET['idDis'];?>&idTime=<?php echo $dados['idTime'];?>'">
+      <?php
+          } else if($_GET['table'] == 'telefone'){
+      ?>
+            <input type="button" value="Excluir" onclick="location.href='excluir.php?table=<?php echo $_GET['table']; ?>&CPF=<?php echo $_GET['CPF'];?>&tel=<?php echo $dados['Telefone'];?>'">
+            <input type="button" value="Editar " onclick="location.href='form_incluir.php?table=<?php echo $_GET['table']; ?>&CPF=<?php echo $_GET['CPF'];?>&tel=<?php echo $dados['Telefone'];?>'">
       <?php
           } else {
       ?>
@@ -153,7 +167,7 @@ function myQuery() {
       break;
     case 'joga':
       if(isset($_GET['CPF'])){
-          $sql = "SELECT `time`.nome AS `Time` FROM joga INNER JOIN `time` ON time_idTime = `time`.idTime WHERE pessoa_cpf='".$_GET['CPF']."'";
+          $sql = "SELECT idTime, `time`.nome AS `Time` FROM joga INNER JOIN `time` ON time_idTime = `time`.idTime WHERE pessoa_cpf='".$_GET['CPF']."'";
       } else{
           $sql = "SELECT pessoa.nome AS Pessoa, `time`.nome AS Time FROM pessoa INNER JOIN joga INNER JOIN `time` ON pessoa.cpf = pessoa_cpf AND time_idTime = `time`.idTime ";
       }
@@ -163,7 +177,7 @@ function myQuery() {
       break;
     case 'telefone':
       if(isset($_GET['CPF'])){
-          $sql = "SELECT telefone FROM telefone WHERE pessoa_cpf='".$_GET['CPF']."'";
+          $sql = "SELECT telefone AS Telefone FROM telefone WHERE pessoa_cpf='".$_GET['CPF']."'";
       } else{
           $sql = "SELECT pessoa.nome,  telefone FROM pessoa INNER JOIN telefone ON pessoa.cpf = telefone.pessoa_cpf ORDER BY pessoa.nome";
       }
