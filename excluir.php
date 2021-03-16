@@ -1,17 +1,17 @@
 <?php
 include("./config.php");
 $con = mysqli_connect($host, $login, $senha, $bd);
-$sql = deleteQuery();
+$sql = deleteQuery(); // seleciona a consulta certa para a tabela do item a ser excluido
 if(mysqli_query($con, $sql)){
-  header("location: ./");
+  header("location: ./"); // retorna para pagina inicial
 } else{
   echo "Erro". $sql . "<br>";
   mysqli_error($con);
 }
-// mysqli_query($con, $sql);
 
 
 
+// seleciona a consulta certa para a tabela do item a ser excluido
 function deleteQuery(){
   $sql;
   switch ($_GET["table"]) {

@@ -12,7 +12,7 @@ header("Content-Type: text/html; charset=utf8",true);
     <?php
       include("./config.php");
       $con = mysqli_connect($host, $login, $senha, $bd);
-      $sql = myQuery();
+      $sql = myQuery(); // seleciona consulta de acordo com tabela
       $tabela = mysqli_query($con, $sql);
       if(mysqli_num_rows($tabela)==0){
     ?>
@@ -24,7 +24,7 @@ header("Content-Type: text/html; charset=utf8",true);
     ?>
     	<tr bgcolor="grey">
         <th>Cidade</th>
-        <th>Estado</th><!--VOLTAR AQUI -->
+        <th>Estado</th>
         <th>Logradouro</th>
         <th>Numero</th>
         <?php if(!is_null($dados[4])) {echo "<th>Complemento</th>";} ?>

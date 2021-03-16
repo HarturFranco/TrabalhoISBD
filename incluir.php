@@ -3,7 +3,7 @@
   include("./config.php");
   $con = mysqli_connect($host, $login, $senha, $bd);
 
-
+  //tratamento de campos de DATE e DATETIME
   $dataT;
   if(isset($_POST["Data"])){
     $date = new DateTime($_POST['Data']);
@@ -13,33 +13,33 @@
     $date = new DateTime($_POST['DataH']);
     $dataT = $date->format('Y-m-d H:i:s');
   }
-
+  // Tratando campo regras (input file)
   $regras = "";
   if(isset($_FILES["Regras"])){
     $regras = addslashes(file_get_contents($_FILES["Regras"]["tmp_name"]));
   }
 
-  $sql = myQuery();
-  if(isset($_POST["id"]) || isset($_POST["NCPF"]) || isset($_POST["idDis"])){
-    //echo "PASSOU";
-    $result = mysqli_query($con, $sql[0]);
-    if(mysqli_num_rows($result)!=0){
+  $sql = myQuery();//seleciona consulta baseada na tabela passada por metodo POST
+  if(isset($_POST["id"]) || isset($_POST["NCPF"]) || isset($_POST["idDis"])){ // campos que indicam edição (UPDATE)
+    $result = mysqli_query($con, $sql[0]); //executa primeira consulta
+    if(mysqli_num_rows($result)!=0){ // se existe campo com o id passado por POST executa o UPDATE
       $res = mysqli_query($con, $sql[1]);
+      $var = $_POST['table'];
+      header('location:exibir.php?table='.$var);
     }
-  }else{
+  }else{ // POST nao possui campos ID portanto é feito a inserção de um novo item
     if(mysqli_query($con, $sql)){
       mysqli_close($con);
-      header("location: ./exibir.php?table=".$_POST["table"]);
+      $var = $_POST['table'];
+      header('location:exibir.php?table='.$var); // se executada com sucesso retorna para exibir da tabela
     } else{
       echo "Erro". $sql . "<br>";
       mysqli_error($con);
     }
-    //nao ta inserindo
-    //echo gettype($sql);
   }
 
 
-
+//  Funcao retorna a/as consulta(s) a serem executadas de acordo com a tabela
   function myQuery(){
     $sql;
     switch ($_POST["table"]) {

@@ -1,4 +1,5 @@
 <?php
+// array para identificar identificar campos de chave estrangeira
 $tabelas = array(
   'Pessoa' => 'pessoa',
   'Universidade' => 'universidade',
@@ -7,6 +8,7 @@ $tabelas = array(
   'Torneio' => 'torneio',
   'Time' => 'time'
 );
+// array para povoar select de campo Estado
 $estadosBrasileiros = array(
   'AC'=>'Acre',
   'AL'=>'Alagoas',
@@ -47,13 +49,15 @@ header("Content-Type: text/html; charset=utf8",true);
     <?php
     include("./config.php");
     $con = mysqli_connect($host, $login, $senha, $bd);
-    if(count($_GET) >= 2){
+    if(count($_GET) >= 2){ // Editar
     ?>
       <center><h3>Editar item tabela <?php echo $_GET['table']; ?></h3></center>
     <?php
-      $sql = myQuery();
-      $result = mysqli_query($con, $sql);
-      $vetor = mysqli_fetch_array($result, MYSQLI_ASSOC);
+      $sql = myQuery(); // selecionando a consulta de acordo com a tabela a ser editada
+      $result = mysqli_query($con, $sql); // executa consulta
+      $vetor = mysqli_fetch_array($result, MYSQLI_ASSOC); //
+
+      //tratando os campos de DATE e DATETIME
       if(array_key_exists("Data", $vetor)){
         $date = new DateTime($vetor['Data']);
         $vetor['Data'] = $date->format('d-m-Y');
@@ -64,6 +68,7 @@ header("Content-Type: text/html; charset=utf8",true);
         $date = new DateTime($vetor['Data e Hora']);
         $vetor['Data e Hora'] = $date->format('d-m-Y H:i:s');
       }
+      // setando chaves para diferentes tabelas
       if(isset($_GET["table"]) && ($_GET["table"] == "joga")){
     ?>
         <input type="hidden" name="idTime" value="<?php echo $_GET['idTime']; ?>">
@@ -88,9 +93,9 @@ header("Content-Type: text/html; charset=utf8",true);
         <input type="hidden" name="id" value="<?php echo $_GET['id']; ?>">
     <?php
       }
-    }else{
+    }else{ // cadastrar
 
-      $vetor = myVetor();
+      $vetor = myVetor(); // vetor possui apenas o nome dos campos sem conteudo
     ?>
 
       <center><h3>Cadastrar Novo item tabela <?php echo $_GET['table']; ?></h3></center>
@@ -103,15 +108,15 @@ header("Content-Type: text/html; charset=utf8",true);
 
     <?php
     foreach ($vetor as $key => $value) {
-      if(isset($tabelas[$key])){
-        $names = myTableName($tabelas[$key]);
+      if(isset($tabelas[$key])){ // se compo refere a uma tabela (chave estrangeira)
+        $names = myTableName($tabelas[$key]); // passa tabela para função que retorna todos ids e 'nomes' da tabela
     ?>
       <tr>
           <td width="20%"><?php echo @$key; ?>:</td>
           <td colspan="2" width="90%">
             <select name=<?php echo $key ?>>
     <?php
-        foreach ($names as $k => $v) {
+        foreach ($names as $k => $v) { // povoa um select com todos dos dados da tabela onde o valor da opcao é a chave e o display é o 'nome'
     ?>
           <option value="<?php echo @$k; ?>" <?php if($k == $value){ ?> selected="selected";<?php } ?>  ><?php echo $v; ?></option>
     <?php
@@ -122,7 +127,7 @@ header("Content-Type: text/html; charset=utf8",true);
           //mysqli_close($con);
         } else {
           //mysqli_close($con);
-          if($key == 'Cidade'){
+          if($key == 'Cidade'){  // cidade é sempre primeiro campo dos enderecos, portanto adiciona divisoria
     ?>
         <tr>
             <th colspan="2" align="center"><br>Endereço:<br></th>
@@ -135,28 +140,28 @@ header("Content-Type: text/html; charset=utf8",true);
           <td width="20%"><?php echo @$key; ?>:</td>
           <td colspan="2" width="90%">
     <?php
-      if($key == 'Regras'){
+      if($key == 'Regras'){ // caso compo é regras, adiciona imput do tipo file
     ?>
           <input type="file" name="Regras" maxlength="2" size="3">
 
 
     <?php
-      } else if($key == 'Data' || $key == 'Data Nascimento'){
+      } else if($key == 'Data' || $key == 'Data Nascimento'){ // caso compo é = data
     ?>
           <input type="text" name="Data" value="<?php echo @$value; ?>" size="8">
     <?php
-      } else if($key == 'Data e Hora'){
+      } else if($key == 'Data e Hora'){ // tratamento diferenciado para datetime em incluir.php
     ?>
           <input type="text" name="DataH" value="<?php echo @$value; ?>" size="8">
     <?php
-      } else if($key == 'Descricao'){
+      } else if($key == 'Descricao'){ // descricao exige textarea
     ?>
           <!-- HTML CODE HERE -->
           <textarea id="descricao" name="<?php echo @$key; ?>" rows="4" cols="32" style="resize: none;">
               <?php echo @$value; ?>
           </textarea>
     <?php
-      } else if ($key == "Estado"){
+      } else if ($key == "Estado"){ // caso campo estado, povoa select com estados brasileiros
     ?>
           <select name="Estado">
     <?php
@@ -168,7 +173,7 @@ header("Content-Type: text/html; charset=utf8",true);
       ?>
           </select>
     <?php
-      }else {
+      }else { // demais campos
     ?>
           <input type="text" name="<?php echo @$key; ?>" value="<?php echo @$value; ?>" maxlength="50" size="31">
     <?php
@@ -183,8 +188,8 @@ header("Content-Type: text/html; charset=utf8",true);
     } //ENDFOREACH
     ?>
       <tr><td colspan="3" align="center">
-            <input type="button" value="Cancelar" onclick="location.href='javascript:history.go(-1)'">
-            <input type="submit" value="Gravar">
+            <input type="button" value="Cancelar" onclick="location.href='javascript:history.go(-1)'"> <!--Voltar para ultima pagina-->
+            <input type="submit" value="Gravar" onclick="location.href='javascript:history.go(-1)'">
           </td>
       </tr>
     </table>
@@ -194,6 +199,7 @@ header("Content-Type: text/html; charset=utf8",true);
 
 
 <?php
+// função retorna a consulta de acordo com a tabela a ser editada
 function myQuery() {
   $sql = "";
   switch ($_GET['table']) {
@@ -237,7 +243,7 @@ function myQuery() {
   }
   return $sql;
 };
-
+// retorna chave e nome de todos os dados da tabela para povoar select dropdown em campos de chave estrangeira
 function myTableName($tabela){
   $values = array();
   $keys = array();
@@ -304,12 +310,11 @@ function myTableName($tabela){
       break;
   }
   $names = array_combine($keys, $values);
-  //print_r($values);
-  //echo implode(",", $keys);
+
   return $names;
 
 }
-
+// retorna vetor com campos do formulario caso opção seja incluir novo
 function myVetor(){
   $keys = "";
   switch ($_GET['table']) {

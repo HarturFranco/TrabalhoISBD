@@ -7,7 +7,7 @@ header("Content-Type: text/html; charset=utf8",true);
   <?php
     include("./config.php");
     $con = mysqli_connect($host, $login, $senha, $bd);
-    $sql = myQuery();
+    $sql = myQuery(); // função que seleciona a consulda baseada na tabela passada por get
     $tabela = mysqli_query($con, $sql);
     mysqli_close($con);
     if(mysqli_num_rows($tabela)==0){
@@ -28,6 +28,7 @@ header("Content-Type: text/html; charset=utf8",true);
 </body>
 </html>
 <?php
+// função que seleciona a consulda baseada na tabela passada por get
 function myQuery(){
   $sql = "";
   switch ($_GET['table']) {
